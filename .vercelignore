@@ -48,3 +48,6 @@ build/
 
 # Vercel
 .vercel/
+
+# PHP specific
+.phpunit.result.cache
