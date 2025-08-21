@@ -22,20 +22,10 @@ A modern, responsive portfolio website built with pure HTML, CSS, and JavaScript
 
 [View Live Portfolio](https://keenmattech.vercel.app/) <!-- Replace with your actual domain -->
 
-## 📁 Project Structure
-keenmattech-portfolio/
-│
-├── index.html # Main HTML file
-├── style.css # Main stylesheet
-|--js/
-  |---maps.js
-  !--main.js
-|--css/
-  |--style.css
-  |--maps.ss
-├── assets/ # Assets directory
-│ ├── images/ # Portfolio images
-│ ├── / # Custom icons
-│ └── videos/ # Background videos
-├── README.md # This file
-└── LICENSE # Project license
+
+## 🛠️ Installation & Setup
+
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/yourusername/keenmattech-portfolio.git
+
