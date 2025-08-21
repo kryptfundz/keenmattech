@@ -1,30 +1,17 @@
 <?php
-// Enable error reporting for debugging
-error_reporting(E_ALL);
-ini_set('display_errors', 1);
+// api/index.php - Simple router
 
-// Get the requested path
+// Get the request path
 $path = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
-$query = parse_url($_SERVER['REQUEST_URI'], PHP_URL_QUERY);
+$base_dir = __DIR__ . '/../';
 
-// Define the base directory
-$baseDir = __DIR__ . '/../';
-$requestedFile = $baseDir . ltrim($path, '/');
-
-// List of static file extensions to serve directly
-$staticExtensions = [
-    'css', 'js', 'png', 'jpg', 'jpeg', 'gif', 'ico', 
-    'svg', 'webp', 'woff', 'woff2', 'ttf', 'eot', 'txt'
-];
-
-// Get the file extension
-$ext = pathinfo($path, PATHINFO_EXTENSION);
-
-// Serve static files directly if they exist
-if (!empty($ext) && in_array($ext, $staticExtensions)) {
-    if (file_exists($requestedFile) && is_file($requestedFile)) {
+// Serve static files directly
+if (preg_match('/\.(css|js|png|jpg|jpeg|gif|ico|svg|webp|woff|woff2|ttf|eot)$/i', $path)) {
+    $file_path = $base_dir . ltrim($path, '/');
+    
+    if (file_exists($file_path) && is_file($file_path)) {
         // Set appropriate content type
-        $contentTypes = [
+        $mime_types = [
             'css' => 'text/css',
             'js' => 'application/javascript',
             'png' => 'image/png',
@@ -37,38 +24,30 @@ if (!empty($ext) && in_array($ext, $staticExtensions)) {
             'woff' => 'font/woff',
             'woff2' => 'font/woff2',
             'ttf' => 'font/ttf',
-            'eot' => 'application/vnd.ms-fontobject',
-            'txt' => 'text/plain'
+            'eot' => 'application/vnd.ms-fontobject'
         ];
         
-        if (isset($contentTypes[$ext])) {
-            header('Content-Type: ' . $contentTypes[$ext]);
+        $ext = strtolower(pathinfo($file_path, PATHINFO_EXTENSION));
+        if (isset($mime_types[$ext])) {
+            header('Content-Type: ' . $mime_types[$ext]);
         }
         
-        readfile($requestedFile);
+        readfile($file_path);
         exit;
     } else {
-        // Static file not found
         http_response_code(404);
-        echo "Static file not found: " . htmlspecialchars($path);
+        echo "File not found";
         exit;
     }
 }
 
-// For all PHP requests, serve the main application
-try {
-    // Check if the main index.php exists
-    $mainIndex = $baseDir . 'index.php';
-    if (file_exists($mainIndex)) {
-        require_once $mainIndex;
-    } else {
-        http_response_code(500);
-        echo "Main index.php file not found in: " . htmlspecialchars($baseDir);
-        exit;
-    }
-} catch (Exception $e) {
+// For all other requests, serve the main application
+$main_app = $base_dir . 'index.php';
+if (file_exists($main_app)) {
+    require_once $main_app;
+} else {
     http_response_code(500);
-    echo "Error loading application: " . htmlspecialchars($e->getMessage());
+    echo "Main application file not found";
     exit;
 }
 ?>
