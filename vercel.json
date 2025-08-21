@@ -1,25 +1,29 @@
 {
+  "version": 2,
   "functions": {
     "api/index.php": {
-      "runtime": "@vercel/php@0.5.1"
+      "runtime": "@vercel/php@0.6.0"
     }
   },
   "routes": [
+    {
+      "src": "/static/(.*)",
+      "dest": "/static/$1"
+    },
+    {
+      "src": "/assets/(.*)",
+      "dest": "/assets/$1"
+    },
+    {
+      "src": "/(.*\.(css|js|png|jpg|jpeg|gif|ico|svg|webp|woff|woff2|ttf|eot))",
+      "dest": "/$1"
+    },
     {
       "src": "/(.*)",
       "dest": "/api/index.php"
     }
   ],
   "headers": [
-    {
-      "source": "/(.*).php",
-      "headers": [
-        {
-          "key": "Content-Type",
-          "value": "text/html; charset=utf-8"
-        }
-      ]
-    },
     {
       "source": "/(.*).css",
       "headers": [
@@ -37,12 +41,6 @@
           "value": "application/javascript"
         }
       ]
-    }
-  ],
-  "rewrites": [
-    {
-      "source": "/(.*)",
-      "destination": "/api/index.php"
     }
   ]
 }
